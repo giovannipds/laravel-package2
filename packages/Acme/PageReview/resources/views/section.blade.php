@@ -25,3 +25,73 @@
         </div>
     </div>
 </div>
+
+<!-- File: packages/vendor-name/PageReview/resources/views/section.blade.php -->
+<!-- Add Vue Code -->
+<script>
+    Pusher.logToConsole = true;
+    var review = new Vue({
+        el: '#review',
+        data: {
+            username: null,
+            comment: null,
+            path: window.location.pathname,
+            isDisabled: false,
+            reviews: [],
+            page: [],
+        },
+        methods: {
+            subscribe() {
+                var pusher = new Pusher('{{ env('PUSHER_APP_KEY')}}', {
+                    cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+                });
+                pusher.subscribe('page-' + this.page.id)
+                    .bind('new-review', this.fetchPageReviews);
+            },
+            fetchPageReviews() {
+                var vm = this;
+                var url = '{{ route('pagereview.index') }}' + '?path=' + this.path;
+
+                fetch(url)
+                    .then(function(response) {
+                        return response.json()
+                    })
+                    .then(function(json) {
+                        vm.page = json.page
+                        vm.reviews = json.reviews
+                        vm.subscribe();
+                    })
+            },
+            addPageReview(event) {
+                event.preventDefault();
+                this.isDisabled = true;
+                const token = document.head.querySelector('meta[name="csrf-token"]');
+                const data = {
+                    path: this.path,
+                    comment: this.comment,
+                    username: this.username,
+                };
+                fetch('{{ route('pagereview.store') }}', {
+                    body: JSON.stringify(data),
+                    credentials: 'same-origin',
+                    headers: {
+                        'content-type': 'application/json',
+                        'x-csrf-token': token.content,
+                    },
+                    method: 'POST',
+                    mode: 'cors',
+                }).then(response => {
+                    this.isDisabled = false;
+                    if (response.ok) {
+                        this.username = '';
+                        this.comment = '';
+                        this.fetchPageReviews();
+                    }
+                })
+            },
+        },
+        created() {
+            this.fetchPageReviews();
+        }
+    });
+</script>
