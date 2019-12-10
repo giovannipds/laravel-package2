@@ -13,8 +13,17 @@ class CreatePageReviewsTables extends Migration
      */
     public function up()
     {
-        Schema::create('page_reviews_tables', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('pages', function (Blueprint $table) {
+            $table->increments('id');
+            $table->text('path');
+            $table->timestamps();
+        });
+
+        Schema::create('reviews', function (Blueprint $table) {
+            $table->increments('id');
+            $table->text('page_id');
+            $table->text('username');
+            $table->text('comment');
             $table->timestamps();
         });
     }
@@ -26,6 +35,7 @@ class CreatePageReviewsTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('page_reviews_tables');
+        Schema::dropIfExists('pages');
+        Schema::dropIfExists('reviews');
     }
 }
