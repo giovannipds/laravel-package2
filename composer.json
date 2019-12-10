@@ -58,5 +58,11 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
+    },
+    "repositories": {
+        "acme/pagereview": {
+            "type": "path",
+            "url": "C:\\Users\\somosgad\\Desktop\\sampleLaravelApp\\packages/Acme/PageReview"
+        }
     }
 }
