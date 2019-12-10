@@ -75,7 +75,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://js.pusher.com/4.2/pusher.min.js"></script>
     @include('pagereview::section')
 
