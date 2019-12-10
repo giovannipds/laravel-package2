@@ -6,10 +6,21 @@ namespace Acme\PageReview\Controllers;
 use Illuminate\Http\Request;
 use Acme\PageReview\Models\Page;
 use Illuminate\Routing\Controller;
-use Pusher\Laravel\Facades\Pusher;
+// use Pusher\Laravel\Facades\Pusher;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 class PageReviewController extends Controller
 {
+    var $pusher;
+    var $user;
+
+    public function __construct()
+    {
+        $this->pusher = App::make('pusher');
+        $this->user = Session::get('user');
+    }
+
     public function index(Request $request)
     {
         if (isset($request->path)) {
@@ -40,7 +51,7 @@ class PageReviewController extends Controller
             'comment' => $request->comment,
         ]);
 
-        Pusher::trigger('page-'.$page->id, 'new-review', $review);
+        $this->pusher->trigger('page-'.$page->id, 'new-review', $review);
 
         return $review;
     }
