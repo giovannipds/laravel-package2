@@ -13,12 +13,15 @@ class PageReviewServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'acme');
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'acme');
-        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        // $this->loadRoutesFrom(__DIR__.'/routes.php');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'pagereview');
 
-        // Publishing is only necessary when using the CLI.
+        $this->app['router']->namespace('Acme\\PageReview\\Controllers')
+        ->middleware(['web'])
+        ->group(function () {
+            $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        });
+
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
         }
@@ -32,11 +35,6 @@ class PageReviewServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/pagereview.php', 'pagereview');
-
-        // Register the service the package provides.
-        $this->app->singleton('pagereview', function ($app) {
-            return new PageReview;
-        });
     }
 
     /**
@@ -48,7 +46,7 @@ class PageReviewServiceProvider extends ServiceProvider
     {
         return ['pagereview'];
     }
-    
+
     /**
      * Console-specific booting.
      *
@@ -56,27 +54,16 @@ class PageReviewServiceProvider extends ServiceProvider
      */
     protected function bootForConsole()
     {
-        // Publishing the configuration file.
         $this->publishes([
             __DIR__.'/../config/pagereview.php' => config_path('pagereview.php'),
         ], 'pagereview.config');
 
-        // Publishing the views.
-        /*$this->publishes([
+        $this->publishes([
             __DIR__.'/../resources/views' => base_path('resources/views/vendor/acme'),
-        ], 'pagereview.views');*/
+        ], 'pagereview.views');
 
-        // Publishing assets.
-        /*$this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/acme'),
-        ], 'pagereview.views');*/
-
-        // Publishing the translation files.
-        /*$this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/acme'),
-        ], 'pagereview.views');*/
-
-        // Registering package commands.
-        // $this->commands([]);
+        $this->publishes([
+            __DIR__ . '/../database/migrations/' => database_path('migrations'),
+        ], 'migrations');
     }
 }
