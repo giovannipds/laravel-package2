@@ -59,10 +59,13 @@
             "@php artisan key:generate --ansi"
         ]
     },
-    "repositories": {
-        "acme/pagereview": {
-            "type": "path",
-            "url": "C:\\Users\\somosgad\\Desktop\\sampleLaravelApp\\packages/Acme/PageReview"
+    "repositories": [
+      {
+        "type": "path",
+        "url": "./packages/*/*/",
+        "options": {
+            "symlink": true
         }
-    }
+      }
+    ]
 }
